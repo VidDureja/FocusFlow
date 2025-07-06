@@ -1,0 +1,370 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - FocusFlow{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <!-- Welcome Section -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h1 class="text-2xl font-bold text-gray-800 mb-2">
+            Welcome back, {{ current_user.username }}!
+        </h1>
+        <p class="text-gray-600">Ready to boost your productivity today?</p>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-6">
+        <!-- Timer Section -->
+        <div class="lg:col-span-2">
+            <div class="bg-white rounded-lg shadow-md p-8">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-4">Focus Timer</h2>
+                    <div class="text-6xl font-bold text-purple-600 mb-6" id="timer-display">25:00</div>
+                    
+                    <!-- Timer Controls -->
+                    <div class="flex justify-center space-x-4 mb-6">
+                        <button id="start-btn" class="bg-green-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-600 transition-colors">
+                            <i class="fas fa-play mr-2"></i>Start
+                        </button>
+                        <button id="pause-btn" class="bg-yellow-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-yellow-600 transition-colors hidden">
+                            <i class="fas fa-pause mr-2"></i>Pause
+                        </button>
+                        <button id="reset-btn" class="bg-red-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-600 transition-colors">
+                            <i class="fas fa-redo mr-2"></i>Reset
+                        </button>
+                    </div>
+                    
+                    <!-- Session Type Selector -->
+                    <div class="flex justify-center space-x-2 mb-6">
+                        <button class="session-type-btn bg-purple-600 text-white px-4 py-2 rounded-lg font-semibold" data-type="work" data-duration="25">
+                            Work (25m)
+                        </button>
+                        <button class="session-type-btn bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold" data-type="break" data-duration="5">
+                            Break (5m)
+                        </button>
+                        <button class="session-type-btn bg-green-500 text-white px-4 py-2 rounded-lg font-semibold" data-type="long_break" data-duration="15">
+                            Long Break (15m)
+                        </button>
+                    </div>
+                    <!-- Session Tag Selector -->
+                    <div class="flex justify-center space-x-2 mb-6">
+                        <label for="session-tag" class="text-gray-700 font-semibold mr-2">Tag:</label>
+                        <select id="session-tag" class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            <option value="General">General</option>
+                            <option value="Work">Work</option>
+                            <option value="Study">Study</option>
+                            <option value="Creative">Creative</option>
+                            <option value="Deep Work">Deep Work</option>
+                            <option value="Admin">Admin</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Progress Bar -->
+                <div class="w-full bg-gray-200 rounded-full h-3 mb-6">
+                    <div id="progress-bar" class="bg-purple-600 h-3 rounded-full transition-all duration-1000" style="width: 0%"></div>
+                </div>
+                
+                <!-- Session Status -->
+                <div class="text-center">
+                    <p id="session-status" class="text-lg text-gray-600">Ready to start your focus session</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Analytics Sidebar -->
+        <div class="space-y-6">
+            <!-- Quick Stats -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">Today's Progress</h3>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Sessions</span>
+                        <span id="today-sessions" class="font-semibold">0</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Minutes</span>
+                        <span id="today-minutes" class="font-semibold">0</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Completion Rate</span>
+                        <span id="completion-rate" class="font-semibold">0%</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Premium Upgrade -->
+            {% if not current_user.is_premium %}
+            <div class="bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg shadow-md p-6 text-white">
+                <h3 class="text-xl font-semibold mb-2">Upgrade to Premium</h3>
+                <p class="text-sm mb-4">Get advanced analytics, custom themes, and more!</p>
+                <button id="upgrade-btn" class="w-full bg-white text-purple-600 py-2 rounded-lg font-semibold hover:bg-gray-100">
+                    Upgrade Now - $9.99/month
+                </button>
+            </div>
+            {% endif %}
+            
+            <!-- Recent Sessions -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">Recent Sessions</h3>
+                <div id="recent-sessions" class="space-y-2">
+                    <p class="text-gray-500 text-sm">No sessions yet today</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Analytics Chart (Premium Feature) -->
+    {% if current_user.is_premium %}
+    <div class="mt-6 bg-white rounded-lg shadow-md p-6">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">Weekly Analytics</h3>
+        <canvas id="analytics-chart" width="400" height="200"></canvas>
+    </div>
+    {% endif %}
+
+    <!-- Download My Stats Button -->
+    <div class="mt-8 text-center">
+        <a href="/api/export/csv" class="inline-block bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold shadow-lg hover:bg-purple-800 transition-colors">
+            <i class="fas fa-download mr-2"></i>Download My Stats (CSV)
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Timer variables
+    let timer = null;
+    let timeLeft = 25 * 60; // 25 minutes in seconds
+    let totalTime = 25 * 60;
+    let isRunning = false;
+    let currentSessionId = null;
+    
+    // DOM elements
+    const timerDisplay = document.getElementById('timer-display');
+    const progressBar = document.getElementById('progress-bar');
+    const startBtn = document.getElementById('start-btn');
+    const pauseBtn = document.getElementById('pause-btn');
+    const resetBtn = document.getElementById('reset-btn');
+    const sessionStatus = document.getElementById('session-status');
+    const sessionTypeBtns = document.querySelectorAll('.session-type-btn');
+    const tagSelector = document.getElementById('session-tag');
+    
+    // Initialize
+    updateTimerDisplay();
+    loadAnalytics();
+    
+    // Event listeners
+    startBtn.addEventListener('click', startTimer);
+    pauseBtn.addEventListener('click', pauseTimer);
+    resetBtn.addEventListener('click', resetTimer);
+    
+    sessionTypeBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            sessionTypeBtns.forEach(b => b.classList.remove('ring-2', 'ring-purple-300'));
+            btn.classList.add('ring-2', 'ring-purple-300');
+            
+            const duration = parseInt(btn.dataset.duration);
+            const type = btn.dataset.type;
+            setSessionType(duration, type);
+        });
+    });
+    
+    // Set initial session type
+    document.querySelector('[data-type="work"]').classList.add('ring-2', 'ring-purple-300');
+    
+    function setSessionType(duration, type) {
+        timeLeft = duration * 60;
+        totalTime = duration * 60;
+        updateTimerDisplay();
+        updateProgressBar();
+        sessionStatus.textContent = `Ready to start ${type} session`;
+    }
+    
+    function startTimer() {
+        if (!isRunning) {
+            isRunning = true;
+            startBtn.classList.add('hidden');
+            pauseBtn.classList.remove('hidden');
+            
+            // Create session on server
+            createSession();
+            
+            timer = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                updateProgressBar();
+                
+                if (timeLeft <= 0) {
+                    completeTimer();
+                }
+            }, 1000);
+        }
+    }
+    
+    function pauseTimer() {
+        if (isRunning) {
+            isRunning = false;
+            startBtn.classList.remove('hidden');
+            pauseBtn.classList.add('hidden');
+            clearInterval(timer);
+        }
+    }
+    
+    function resetTimer() {
+        pauseTimer();
+        timeLeft = totalTime;
+        updateTimerDisplay();
+        updateProgressBar();
+        sessionStatus.textContent = 'Timer reset';
+    }
+    
+    function completeTimer() {
+        pauseTimer();
+        timeLeft = 0;
+        updateTimerDisplay();
+        updateProgressBar();
+        sessionStatus.textContent = 'Session completed!';
+        
+        // Complete session on server
+        if (currentSessionId) {
+            completeSession(currentSessionId);
+        }
+        
+        // Show notification
+        if ('Notification' in window && Notification.permission === 'granted') {
+            new Notification('FocusFlow', {
+                body: 'Your session is complete!',
+                icon: '/static/icon.png'
+            });
+        }
+        
+        // Play sound
+        playNotificationSound();
+    }
+    
+    function updateTimerDisplay() {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+    
+    function updateProgressBar() {
+        const progress = ((totalTime - timeLeft) / totalTime) * 100;
+        progressBar.style.width = `${progress}%`;
+    }
+    
+    async function createSession() {
+        try {
+            const response = await fetch('/api/session', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    type: 'work',
+                    duration: Math.floor(totalTime / 60),
+                    tag: tagSelector ? tagSelector.value : 'General'
+                })
+            });
+            const data = await response.json();
+            currentSessionId = data.session_id;
+        } catch (error) {
+            console.error('Error creating session:', error);
+        }
+    }
+    
+    async function completeSession(sessionId) {
+        try {
+            await fetch(`/api/session/${sessionId}/complete`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            loadAnalytics();
+        } catch (error) {
+            console.error('Error completing session:', error);
+        }
+    }
+    
+    async function loadAnalytics() {
+        try {
+            const response = await fetch('/api/analytics');
+            const data = await response.json();
+            
+            document.getElementById('today-sessions').textContent = data.total_sessions;
+            document.getElementById('today-minutes').textContent = data.total_minutes;
+            document.getElementById('completion-rate').textContent = `${data.completion_rate.toFixed(1)}%`;
+            
+            // Update recent sessions
+            updateRecentSessions(data.daily_data);
+        } catch (error) {
+            console.error('Error loading analytics:', error);
+        }
+    }
+    
+    function updateRecentSessions(dailyData) {
+        const recentSessionsDiv = document.getElementById('recent-sessions');
+        const today = new Date().toISOString().split('T')[0];
+        
+        if (dailyData[today]) {
+            const sessions = dailyData[today];
+            recentSessionsDiv.innerHTML = `
+                <div class="text-sm">
+                    <div class="flex justify-between">
+                        <span>Today</span>
+                        <span>${sessions.sessions} sessions</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>Total time</span>
+                        <span>${sessions.minutes} min</span>
+                    </div>
+                </div>
+            `;
+        }
+    }
+    
+    function playNotificationSound() {
+        // Create a simple notification sound
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+        oscillator.frequency.setValueAtTime(600, audioContext.currentTime + 0.1);
+        
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+        
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.2);
+    }
+    
+    // Request notification permission
+    if ('Notification' in window && Notification.permission === 'default') {
+        Notification.requestPermission();
+    }
+    
+    // Premium upgrade
+    document.getElementById('upgrade-btn')?.addEventListener('click', async () => {
+        try {
+            const response = await fetch('/api/premium/upgrade', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            if (response.ok) {
+                location.reload();
+            }
+        } catch (error) {
+            console.error('Error upgrading:', error);
+        }
+    });
+</script>
+{% endblock %} 
