@@ -6,7 +6,8 @@ from datetime import datetime, timedelta, timezone
 import json
 import os
 import csv
-import pandas as pd
+# import pandas as pd  # Commented out for deployment without pandas
+# import numpy as np  # Commented out for deployment without numpy
 from io import BytesIO
 from collections import defaultdict, Counter
 
@@ -200,65 +201,71 @@ def export_sessions_csv():
         'Content-Disposition': 'attachment; filename=focusflow_sessions.csv'
     })
 
+# Comment out or stub any analytics endpoints that use pandas or numpy
 @app.route('/api/analytics/heatmap')
 @login_required
 def productivity_heatmap():
-    sessions = PomodoroSession.query.filter_by(user_id=current_user.id, completed=True).all()
-    heatmap = defaultdict(lambda: [0]*24)  # day_of_week: [hour0, hour1, ...]
-    for s in sessions:
-        if s.start_time:
-            dow = s.start_time.weekday()
-            hour = s.start_time.hour
-            heatmap[dow][hour] += 1
-    return jsonify(heatmap)
+    # sessions = PomodoroSession.query.filter_by(user_id=current_user.id, completed=True).all()
+    # heatmap = defaultdict(lambda: [0]*24)  # day_of_week: [hour0, hour1, ...]
+    # for s in sessions:
+    #     if s.start_time:
+    #         dow = s.start_time.weekday()
+    #         hour = s.start_time.hour
+    #         heatmap[dow][hour] += 1
+    # return jsonify(heatmap)
+    return jsonify({'message': 'Heatmap analytics temporarily disabled (no pandas/numpy).'}), 501
 
 @app.route('/api/analytics/best_hours')
 @login_required
 def best_focus_hours():
-    sessions = PomodoroSession.query.filter_by(user_id=current_user.id, completed=True).all()
-    hour_counts = Counter()
-    for s in sessions:
-        if s.start_time:
-            hour_counts[s.start_time.hour] += 1
-    return jsonify(hour_counts)
+    # sessions = PomodoroSession.query.filter_by(user_id=current_user.id, completed=True).all()
+    # hour_counts = Counter()
+    # for s in sessions:
+    #     if s.start_time:
+    #         hour_counts[s.start_time.hour] += 1
+    # return jsonify(hour_counts)
+    return jsonify({'message': 'Best hours analytics temporarily disabled (no pandas/numpy).'}), 501
 
 @app.route('/api/analytics/longest_streak')
 @login_required
 def longest_streak():
-    sessions = PomodoroSession.query.filter_by(user_id=current_user.id, completed=True).order_by(PomodoroSession.start_time).all()
-    streak = max_streak = 0
-    last_date = None
-    for s in sessions:
-        date = s.start_time.date()
-        if last_date is None or (date - last_date).days == 1:
-            streak += 1
-        else:
-            streak = 1
-        max_streak = max(max_streak, streak)
-        last_date = date
-    return jsonify({'longest_streak': max_streak})
+    # sessions = PomodoroSession.query.filter_by(user_id=current_user.id, completed=True).order_by(PomodoroSession.start_time).all()
+    # streak = max_streak = 0
+    # last_date = None
+    # for s in sessions:
+    #     date = s.start_time.date()
+    #     if last_date is None or (date - last_date).days == 1:
+    #         streak += 1
+    #     else:
+    #         streak = 1
+    #     max_streak = max(max_streak, streak)
+    #     last_date = date
+    # return jsonify({'longest_streak': max_streak})
+    return jsonify({'message': 'Longest streak analytics temporarily disabled (no pandas/numpy).'}), 501
 
 @app.route('/api/analytics/completion_by_tag')
 @login_required
 def completion_by_tag():
-    sessions = PomodoroSession.query.filter_by(user_id=current_user.id).all()
-    tag_counts = Counter()
-    for s in sessions:
-        tag_counts[s.tag or 'General'] += int(s.completed)
-    return jsonify(tag_counts)
+    # sessions = PomodoroSession.query.filter_by(user_id=current_user.id).all()
+    # tag_counts = Counter()
+    # for s in sessions:
+    #     tag_counts[s.tag or 'General'] += int(s.completed)
+    # return jsonify(tag_counts)
+    return jsonify({'message': 'Completion by tag analytics temporarily disabled (no pandas/numpy).'}), 501
 
 @app.route('/api/analytics/recommendation')
 @login_required
 def recommendation():
-    sessions = PomodoroSession.query.filter_by(user_id=current_user.id, completed=True).all()
-    hour_counts = Counter()
-    for s in sessions:
-        if s.start_time:
-            hour_counts[s.start_time.hour] += 1
-    if hour_counts:
-        best_hour = hour_counts.most_common(1)[0][0]
-        return jsonify({'recommendation': f'You focus best around {best_hour}:00. Try scheduling deep work then.'})
-    return jsonify({'recommendation': 'Not enough data yet. Complete more sessions!'})
+    # sessions = PomodoroSession.query.filter_by(user_id=current_user.id, completed=True).all()
+    # hour_counts = Counter()
+    # for s in sessions:
+    #     if s.start_time:
+    #         hour_counts[s.start_time.hour] += 1
+    # if hour_counts:
+    #     best_hour = hour_counts.most_common(1)[0][0]
+    #     return jsonify({'recommendation': f'You focus best around {best_hour}:00. Try scheduling deep work then.'})
+    # return jsonify({'recommendation': 'Not enough data yet. Complete more sessions!'})
+    return jsonify({'message': 'Recommendation analytics temporarily disabled (no pandas/numpy).'}), 501
 
 @app.route('/api/export/pdf')
 @login_required
