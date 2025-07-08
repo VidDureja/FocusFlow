@@ -3,7 +3,7 @@ services:
     name: pomodoro-app
     env: python
     buildCommand: "./build.sh && pip install -r requirements.txt"
-    startCommand: "gunicorn app:app --bind 0.0.0.0:$PORT"
+    startCommand: "./prestart.sh && gunicorn app:app --bind 0.0.0.0:$PORT"
     plan: free
     envVars:
       - key: FLASK_ENV
