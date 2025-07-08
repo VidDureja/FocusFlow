@@ -17,8 +17,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/pomodoro.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
-with app.app_context():
-    db.create_all()
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
@@ -282,4 +280,8 @@ def email_weekly_summary():
     return jsonify({'message': 'Weekly email summary coming soon!'}), 501
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=8010) 
+    app.run(debug=True, host='0.0.0.0', port=8010)
+
+# Ensure tables are created on every startup (for Render)
+with app.app_context():
+    db.create_all() 
