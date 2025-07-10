@@ -179,6 +179,19 @@
             <i class="fas fa-download mr-2"></i>Download My Stats (CSV)
         </a>
     </div>
+
+    <!-- Session Review Modal -->
+    <div id="session-review-modal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-lg p-8 max-w-md w-full">
+            <h3 class="text-xl font-bold mb-4 text-gray-800">Session Review</h3>
+            <p class="mb-2 text-gray-600">How did this session go? Write a quick review or reflection below:</p>
+            <textarea id="session-review-text" rows="4" class="w-full border border-gray-300 rounded-lg p-2 mb-4 focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="E.g. This session went well! I finished my main task."></textarea>
+            <div class="flex justify-end space-x-2">
+                <button id="session-review-cancel" class="px-4 py-2 rounded-lg bg-gray-200 text-gray-700 font-semibold hover:bg-gray-300">Cancel</button>
+                <button id="session-review-submit" class="px-4 py-2 rounded-lg bg-purple-600 text-white font-semibold hover:bg-purple-700">Save Review</button>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
 
@@ -307,12 +320,12 @@
         updateTimerDisplay();
         updateProgressBar();
         sessionStatus.textContent = 'Session completed!';
-        
-        // Complete session on server
+
+        // Show review modal
         if (currentSessionId) {
-            completeSession(currentSessionId);
+            showSessionReviewModal(currentSessionId);
         }
-        
+
         // Show notification
         if ('Notification' in window && Notification.permission === 'granted') {
             new Notification('FocusFlow', {
@@ -320,7 +333,7 @@
                 icon: '/static/icon.png'
             });
         }
-        
+
         // Play sound
         playNotificationSound();
     }
@@ -363,17 +376,20 @@
         }
     }
     
-    async function completeSession(sessionId) {
+    // Replace the old completeSession function with a no-op (handled by modal now)
+    async function completeSession(sessionId) { /* handled by modal */ }
+    
+    async function completeSessionWithComment(sessionId, comment) {
         try {
             await fetch(`/api/session/${sessionId}/complete`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                }
+                },
+                body: JSON.stringify({ comment: comment })
             });
-            loadAnalytics();
         } catch (error) {
-            console.error('Error completing session:', error);
+            console.error('Error completing session with comment:', error);
         }
     }
     

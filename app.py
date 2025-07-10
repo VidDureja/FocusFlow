@@ -138,6 +138,10 @@ def complete_session(session_id):
     
     session.end_time = datetime.utcnow()
     session.completed = True
+    # Accept comment from request body
+    data = request.get_json(silent=True)
+    if data and 'comment' in data:
+        session.notes = data['comment']
     db.session.commit()
     
     return jsonify({'success': True})
