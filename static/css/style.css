@@ -47,6 +47,36 @@ button:active {
     box-shadow: 0 4px 12px rgba(147, 51, 234, 0.4);
 }
 
+/* Session type card styles */
+.session-type-card {
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+.session-type-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.session-type-card.ring-4 {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Break button styles */
+.break-btn {
+    transition: all 0.2s ease-in-out;
+}
+
+.break-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.break-btn.ring-2 {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+}
+
 /* Card hover effects */
 .bg-white {
     transition: all 0.3s ease-in-out;

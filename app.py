@@ -112,6 +112,12 @@ def create_session():
     session_type = data.get('type', 'work')
     duration = data.get('duration', 25)
     
+    # Map session types to durations if not explicitly provided
+    if session_type == 'deep_work' and duration == 25:
+        duration = 90
+    elif session_type == 'pomodoro' and duration == 25:
+        duration = 25
+    
     session = PomodoroSession(
         user_id=current_user.id,
         start_time=datetime.now(timezone.utc),
@@ -150,22 +156,37 @@ def get_analytics():
     total_minutes = sum(s.duration for s in sessions if s.completed)
     completed_sessions = len([s for s in sessions if s.completed])
     
+    # Separate analytics for different session types
+    pomodoro_sessions = [s for s in sessions if s.session_type == 'pomodoro']
+    deep_work_sessions = [s for s in sessions if s.session_type == 'deep_work']
+    
+    pomodoro_minutes = sum(s.duration for s in pomodoro_sessions if s.completed)
+    deep_work_minutes = sum(s.duration for s in deep_work_sessions if s.completed)
+    
     # Daily breakdown
     daily_data = {}
     for session in sessions:
         date = session.start_time.date().isoformat()
         if date not in daily_data:
-            daily_data[date] = {'sessions': 0, 'minutes': 0}
+            daily_data[date] = {'sessions': 0, 'minutes': 0, 'pomodoro_sessions': 0, 'deep_work_sessions': 0}
         daily_data[date]['sessions'] += 1
         if session.completed:
             daily_data[date]['minutes'] += session.duration
+            if session.session_type == 'pomodoro':
+                daily_data[date]['pomodoro_sessions'] += 1
+            elif session.session_type == 'deep_work':
+                daily_data[date]['deep_work_sessions'] += 1
     
     return jsonify({
         'total_sessions': total_sessions,
         'completed_sessions': completed_sessions,
         'total_minutes': total_minutes,
         'completion_rate': (completed_sessions / total_sessions * 100) if total_sessions > 0 else 0,
-        'daily_data': daily_data
+        'daily_data': daily_data,
+        'pomodoro_sessions': len(pomodoro_sessions),
+        'deep_work_sessions': len(deep_work_sessions),
+        'pomodoro_minutes': pomodoro_minutes,
+        'deep_work_minutes': deep_work_minutes
     })
 
 @app.route('/api/premium/upgrade', methods=['POST'])

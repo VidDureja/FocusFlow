@@ -34,16 +34,48 @@
                     </div>
                     
                     <!-- Session Type Selector -->
-                    <div class="flex justify-center space-x-2 mb-6">
-                        <button class="session-type-btn bg-purple-600 text-white px-4 py-2 rounded-lg font-semibold" data-type="work" data-duration="25">
-                            Work (25m)
-                        </button>
-                        <button class="session-type-btn bg-blue-500 text-white px-4 py-2 rounded-lg font-semibold" data-type="break" data-duration="5">
-                            Break (5m)
-                        </button>
-                        <button class="session-type-btn bg-green-500 text-white px-4 py-2 rounded-lg font-semibold" data-type="long_break" data-duration="15">
-                            Long Break (15m)
-                        </button>
+                    <div class="mb-8">
+                        <h3 class="text-lg font-semibold text-gray-700 mb-4 text-center">Choose Your Focus Method</h3>
+                        <div class="grid md:grid-cols-2 gap-4 max-w-2xl mx-auto">
+                            <!-- Pomodoro Option -->
+                            <div class="session-type-card bg-gradient-to-br from-purple-500 to-purple-600 text-white p-6 rounded-xl cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-lg" data-type="pomodoro" data-duration="25">
+                                <div class="text-center">
+                                    <i class="fas fa-clock text-3xl mb-3"></i>
+                                    <h4 class="text-xl font-bold mb-2">Pomodoro</h4>
+                                    <p class="text-sm opacity-90 mb-3">25-minute focused work sessions</p>
+                                    <div class="bg-white bg-opacity-20 rounded-lg p-2">
+                                        <span class="text-2xl font-bold">25:00</span>
+                                    </div>
+                                    <p class="text-xs mt-2 opacity-75">Perfect for quick tasks and maintaining focus</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Deep Work Option -->
+                            <div class="session-type-card bg-gradient-to-br from-blue-500 to-blue-600 text-white p-6 rounded-xl cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-lg" data-type="deep_work" data-duration="90">
+                                <div class="text-center">
+                                    <i class="fas fa-brain text-3xl mb-3"></i>
+                                    <h4 class="text-xl font-bold mb-2">Deep Work</h4>
+                                    <p class="text-sm opacity-90 mb-3">90-minute intensive focus sessions</p>
+                                    <div class="bg-white bg-opacity-20 rounded-lg p-2">
+                                        <span class="text-2xl font-bold">90:00</span>
+                                    </div>
+                                    <p class="text-xs mt-2 opacity-75">Ideal for complex projects and deep thinking</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Break Options (shown after selecting session type) -->
+                    <div id="break-options" class="hidden mb-6">
+                        <h4 class="text-lg font-semibold text-gray-700 mb-3 text-center">Break Options</h4>
+                        <div class="flex justify-center space-x-2">
+                            <button class="break-btn bg-green-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-600 transition-colors" data-type="break" data-duration="5">
+                                Short Break (5m)
+                            </button>
+                            <button class="break-btn bg-orange-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-orange-600 transition-colors" data-type="long_break" data-duration="15">
+                                Long Break (15m)
+                            </button>
+                        </div>
                     </div>
                     <!-- Session Tag Selector -->
                     <div class="flex justify-center space-x-2 mb-6">
@@ -79,16 +111,35 @@
                 <h3 class="text-xl font-semibold text-gray-800 mb-4">Today's Progress</h3>
                 <div class="space-y-4">
                     <div class="flex justify-between items-center">
-                        <span class="text-gray-600">Sessions</span>
+                        <span class="text-gray-600">Total Sessions</span>
                         <span id="today-sessions" class="font-semibold">0</span>
                     </div>
                     <div class="flex justify-between items-center">
-                        <span class="text-gray-600">Minutes</span>
+                        <span class="text-gray-600">Total Minutes</span>
                         <span id="today-minutes" class="font-semibold">0</span>
                     </div>
                     <div class="flex justify-between items-center">
                         <span class="text-gray-600">Completion Rate</span>
                         <span id="completion-rate" class="font-semibold">0%</span>
+                    </div>
+                    
+                    <!-- Session Type Breakdown -->
+                    <div class="border-t pt-4 mt-4">
+                        <h4 class="text-sm font-semibold text-gray-700 mb-3">Session Breakdown</h4>
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-purple-600">
+                                    <i class="fas fa-clock mr-1"></i>Pomodoro
+                                </span>
+                                <span id="pomodoro-sessions" class="text-sm font-semibold">0</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-blue-600">
+                                    <i class="fas fa-brain mr-1"></i>Deep Work
+                                </span>
+                                <span id="deep-work-sessions" class="text-sm font-semibold">0</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -160,10 +211,35 @@
     pauseBtn.addEventListener('click', pauseTimer);
     resetBtn.addEventListener('click', resetTimer);
     
-    sessionTypeBtns.forEach(btn => {
+    // Session type card selection
+    const sessionTypeCards = document.querySelectorAll('.session-type-card');
+    sessionTypeCards.forEach(card => {
+        card.addEventListener('click', () => {
+            // Remove active state from all cards
+            sessionTypeCards.forEach(c => {
+                c.classList.remove('ring-4', 'ring-white', 'ring-opacity-50');
+                c.style.transform = 'scale(1)';
+            });
+            
+            // Add active state to selected card
+            card.classList.add('ring-4', 'ring-white', 'ring-opacity-50');
+            card.style.transform = 'scale(1.05)';
+            
+            const duration = parseInt(card.dataset.duration);
+            const type = card.dataset.type;
+            setSessionType(duration, type);
+            
+            // Show break options
+            document.getElementById('break-options').classList.remove('hidden');
+        });
+    });
+    
+    // Break button selection
+    const breakBtns = document.querySelectorAll('.break-btn');
+    breakBtns.forEach(btn => {
         btn.addEventListener('click', () => {
-            sessionTypeBtns.forEach(b => b.classList.remove('ring-2', 'ring-purple-300'));
-            btn.classList.add('ring-2', 'ring-purple-300');
+            breakBtns.forEach(b => b.classList.remove('ring-2', 'ring-white'));
+            btn.classList.add('ring-2', 'ring-white');
             
             const duration = parseInt(btn.dataset.duration);
             const type = btn.dataset.type;
@@ -171,8 +247,13 @@
         });
     });
     
-    // Set initial session type
-    document.querySelector('[data-type="work"]').classList.add('ring-2', 'ring-purple-300');
+    // Set initial session type (Pomodoro)
+    const initialCard = document.querySelector('[data-type="pomodoro"]');
+    if (initialCard) {
+        initialCard.classList.add('ring-4', 'ring-white', 'ring-opacity-50');
+        initialCard.style.transform = 'scale(1.05)';
+        setSessionType(25, 'pomodoro');
+    }
     
     function setSessionType(duration, type) {
         timeLeft = duration * 60;
@@ -257,13 +338,20 @@
     
     async function createSession() {
         try {
+            // Determine session type based on current selection
+            let sessionType = 'pomodoro'; // default
+            const activeCard = document.querySelector('.session-type-card.ring-4');
+            if (activeCard) {
+                sessionType = activeCard.dataset.type;
+            }
+            
             const response = await fetch('/api/session', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    type: 'work',
+                    type: sessionType,
                     duration: Math.floor(totalTime / 60),
                     tag: tagSelector ? tagSelector.value : 'General'
                 })
@@ -297,6 +385,10 @@
             document.getElementById('today-sessions').textContent = data.total_sessions;
             document.getElementById('today-minutes').textContent = data.total_minutes;
             document.getElementById('completion-rate').textContent = `${data.completion_rate.toFixed(1)}%`;
+            
+            // Update session type breakdown
+            document.getElementById('pomodoro-sessions').textContent = data.pomodoro_sessions || 0;
+            document.getElementById('deep-work-sessions').textContent = data.deep_work_sessions || 0;
             
             // Update recent sessions
             updateRecentSessions(data.daily_data);

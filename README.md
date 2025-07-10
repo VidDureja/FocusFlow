@@ -1,11 +1,12 @@
-# FocusFlow - Pomodoro Timer PWA
+# FocusFlow - Productivity Timer PWA
 
-A Progressive Web App (PWA) that helps you boost productivity using the Pomodoro Technique. Install it on your phone like a native app!
+A Progressive Web App (PWA) that helps you boost productivity using both Pomodoro Technique and Deep Work sessions. Choose your focus method and install it on your phone like a native app!
 
 ## 🚀 Features
 
 ### Core Features
-- ⏱️ **Pomodoro Timer**: 25-minute work sessions, 5-minute breaks, 15-minute long breaks
+- ⏱️ **Pomodoro Timer**: 25-minute focused work sessions with 5-minute breaks
+- 🧠 **Deep Work Sessions**: 90-minute intensive focus periods for complex projects
 - 📊 **Progress Tracking**: Monitor your daily sessions and completion rates
 - 🔄 **Offline Support**: Works without internet connection
 - 📱 **PWA Ready**: Install on home screen like a native app
@@ -80,7 +81,7 @@ A Progressive Web App (PWA) that helps you boost productivity using the Pomodoro
 ## 💰 Monetization Strategy
 
 ### Freemium Model
-- **Free Tier**: Basic timer, daily tracking, simple analytics
+- **Free Tier**: Pomodoro & Deep Work sessions, daily tracking, basic analytics
 - **Premium Tier**: $9.99/month for advanced features
 
 ### Revenue Streams

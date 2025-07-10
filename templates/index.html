@@ -5,11 +5,11 @@
 {% block content %}
 <div class="text-center py-12">
     <h1 class="text-5xl font-bold text-gray-800 mb-6">
-        Master Your Time with 
+        Master Your Focus with 
         <span class="text-purple-600">FocusFlow</span>
     </h1>
-    <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-        The ultimate Pomodoro timer app that helps you stay focused, track your productivity, and achieve more in less time.
+    <p class="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+        The ultimate productivity app combining Pomodoro Technique and Deep Work sessions. Choose your focus method and boost your productivity with intelligent time management.
     </p>
     
     {% if not current_user.is_authenticated %}
@@ -32,20 +32,20 @@
 <div class="grid md:grid-cols-3 gap-8 mt-16">
     <div class="bg-white p-6 rounded-lg shadow-md text-center">
         <i class="fas fa-clock text-4xl text-purple-600 mb-4"></i>
-        <h3 class="text-xl font-semibold mb-2">Smart Timer</h3>
-        <p class="text-gray-600">Customizable Pomodoro sessions with intelligent break scheduling</p>
+        <h3 class="text-xl font-semibold mb-2">Pomodoro Technique</h3>
+        <p class="text-gray-600">25-minute focused work sessions with short breaks for maximum productivity</p>
+    </div>
+    
+    <div class="bg-white p-6 rounded-lg shadow-md text-center">
+        <i class="fas fa-brain text-4xl text-blue-600 mb-4"></i>
+        <h3 class="text-xl font-semibold mb-2">Deep Work Sessions</h3>
+        <p class="text-gray-600">90-minute intensive focus periods for complex projects and deep thinking</p>
     </div>
     
     <div class="bg-white p-6 rounded-lg shadow-md text-center">
         <i class="fas fa-chart-line text-4xl text-purple-600 mb-4"></i>
-        <h3 class="text-xl font-semibold mb-2">Analytics</h3>
-        <p class="text-gray-600">Track your productivity patterns and optimize your workflow</p>
-    </div>
-    
-    <div class="bg-white p-6 rounded-lg shadow-md text-center">
-        <i class="fas fa-crown text-4xl text-purple-600 mb-4"></i>
-        <h3 class="text-xl font-semibold mb-2">Premium Features</h3>
-        <p class="text-gray-600">Advanced analytics, custom themes, and team collaboration</p>
+        <h3 class="text-xl font-semibold mb-2">Smart Analytics</h3>
+        <p class="text-gray-600">Track your productivity patterns and optimize your workflow with detailed insights</p>
     </div>
 </div>
 
@@ -57,9 +57,9 @@
             <h3 class="text-2xl font-semibold mb-4">Free</h3>
             <p class="text-4xl font-bold text-purple-600 mb-6">$0</p>
             <ul class="text-left space-y-2 mb-6">
-                <li><i class="fas fa-check text-green-500 mr-2"></i>Basic Pomodoro timer</li>
+                <li><i class="fas fa-check text-green-500 mr-2"></i>Pomodoro & Deep Work sessions</li>
                 <li><i class="fas fa-check text-green-500 mr-2"></i>Daily session tracking</li>
-                <li><i class="fas fa-check text-green-500 mr-2"></i>Basic statistics</li>
+                <li><i class="fas fa-check text-green-500 mr-2"></i>Basic productivity analytics</li>
             </ul>
             <a href="{{ url_for('register') }}" class="w-full bg-gray-200 text-gray-800 py-2 rounded-lg font-semibold">Get Started</a>
         </div>
@@ -69,10 +69,10 @@
             <p class="text-4xl font-bold mb-6">$9.99<span class="text-lg">/month</span></p>
             <ul class="text-left space-y-2 mb-6">
                 <li><i class="fas fa-check mr-2"></i>Everything in Free</li>
-                <li><i class="fas fa-check mr-2"></i>Advanced analytics</li>
-                <li><i class="fas fa-check mr-2"></i>Custom themes</li>
-                <li><i class="fas fa-check mr-2"></i>Team collaboration</li>
-                <li><i class="fas fa-check mr-2"></i>Export data</li>
+                <li><i class="fas fa-check mr-2"></i>Advanced productivity insights</li>
+                <li><i class="fas fa-check mr-2"></i>Custom themes & personalization</li>
+                <li><i class="fas fa-check mr-2"></i>Team collaboration features</li>
+                <li><i class="fas fa-check mr-2"></i>Data export & reports</li>
             </ul>
             <button class="w-full bg-white text-purple-600 py-2 rounded-lg font-semibold hover:bg-gray-100">Upgrade Now</button>
         </div>
