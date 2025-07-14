@@ -27,6 +27,19 @@
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
 </head>
 <body class="bg-gradient-to-br from-purple-50 to-blue-50 min-h-screen">
+    <!-- PWA Install Banner -->
+    <div id="pwa-install-banner" class="w-full bg-gradient-to-r from-purple-600 to-blue-500 text-white flex items-center justify-between px-4 py-2 fixed top-0 left-0 z-50 shadow-md" style="display: none;">
+        <div class="flex items-center space-x-3">
+            <i class="fas fa-mobile-alt text-2xl"></i>
+            <span class="font-semibold">Install FocusFlow for the best experience!</span>
+        </div>
+        <div class="flex items-center space-x-2">
+            <button id="pwa-install-btn" class="bg-white text-purple-700 font-bold px-4 py-1 rounded-lg shadow hover:bg-purple-100 transition-colors">Install App</button>
+            <button id="pwa-banner-close" class="text-white text-xl hover:text-gray-200 focus:outline-none">&times;</button>
+        </div>
+    </div>
+    <!-- End PWA Install Banner -->
+
     <nav class="bg-white shadow-lg">
         <div class="max-w-6xl mx-auto px-4">
             <div class="flex justify-between items-center py-4">
@@ -51,7 +64,52 @@
         {% block content %}{% endblock %}
     </main>
 
+    <!-- PWA Install Instructions Modal -->
+    <div id="pwa-install-modal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg shadow-lg p-8 max-w-md w-full relative">
+            <button id="pwa-modal-close" class="absolute top-2 right-3 text-gray-400 text-2xl hover:text-gray-600">&times;</button>
+            <h3 class="text-xl font-bold mb-4 text-purple-700">How to Install FocusFlow</h3>
+            <ol class="list-decimal list-inside text-gray-700 space-y-2 mb-4">
+                <li>Tap the <span class="inline-block bg-gray-200 px-2 py-1 rounded">Share</span> button <span class="inline-block align-middle"><i class="fas fa-share-square"></i></span> at the bottom of Safari.</li>
+                <li>Scroll down and tap <span class="font-semibold">Add to Home Screen</span>.</li>
+                <li>Tap <span class="font-semibold">Add</span> in the top right corner.</li>
+                <li>FocusFlow will appear on your home screen like a real app!</li>
+            </ol>
+            <div class="text-center">
+                <img src="https://support.apple.com/library/content/dam/edam/applecare/images/en_US/iOS/ios13-iphone-xs-safari-share-button.jpg" alt="Share button example" class="mx-auto rounded shadow mb-2" style="max-width:120px;">
+            </div>
+        </div>
+    </div>
+    <!-- End PWA Install Instructions Modal -->
+
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>
-    {% block scripts %}{% endblock %}
+    {% block scripts %}
+    <script>
+    // PWA Install Banner Logic
+    function showPwaBanner() {
+        if (!localStorage.getItem('pwaBannerDismissed')) {
+            document.getElementById('pwa-install-banner').style.display = 'flex';
+            document.body.style.paddingTop = '56px'; // offset for fixed banner
+        }
+    }
+    function hidePwaBanner() {
+        document.getElementById('pwa-install-banner').style.display = 'none';
+        document.body.style.paddingTop = '';
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        showPwaBanner();
+        document.getElementById('pwa-banner-close').onclick = function() {
+            localStorage.setItem('pwaBannerDismissed', '1');
+            hidePwaBanner();
+        };
+        document.getElementById('pwa-install-btn').onclick = function() {
+            document.getElementById('pwa-install-modal').classList.remove('hidden');
+        };
+        document.getElementById('pwa-modal-close').onclick = function() {
+            document.getElementById('pwa-install-modal').classList.add('hidden');
+        };
+    });
+    </script>
+    {% endblock %}
 </body>
 </html> 
