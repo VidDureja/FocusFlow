@@ -200,14 +200,13 @@
 <script>
     // Timer variables
     let timer = null;
-    let timeLeft = 25 * 60; // 25 minutes in seconds
-    let totalTime = 25 * 60;
     let isRunning = false;
     let currentSessionId = null;
-    
-    // Add these variables to track the selected session type and duration
+    // Track the selected session type and duration
     let selectedSessionType = 'pomodoro';
     let selectedSessionDuration = 25;
+    let timeLeft = selectedSessionDuration * 60;
+    let totalTime = selectedSessionDuration * 60;
     
     // DOM elements
     const timerDisplay = document.getElementById('timer-display');
@@ -284,7 +283,7 @@
     
     function startTimer() {
         if (!isRunning) {
-            // Always set timer to the selected session duration before starting
+            // Always use the selected session duration
             timeLeft = selectedSessionDuration * 60;
             totalTime = selectedSessionDuration * 60;
             updateTimerDisplay();
