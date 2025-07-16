@@ -279,6 +279,10 @@
         updateTimerDisplay();
         updateProgressBar();
         sessionStatus.textContent = `Ready to start ${type} session`;
+        // If timer is running, reset and pause
+        if (isRunning) {
+            pauseTimer();
+        }
     }
     
     function startTimer() {
