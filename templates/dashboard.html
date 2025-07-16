@@ -279,11 +279,8 @@
         updateTimerDisplay();
         updateProgressBar();
         sessionStatus.textContent = `Ready to start ${type} session`;
-        // If timer is running, pause and reset
-        if (isRunning) {
-            pauseTimer();
-        }
-        sessionActive = false; // New session type, so not active yet
+        if (isRunning) pauseTimer();
+        sessionActive = false;
         currentSessionId = null;
     }
     
@@ -292,7 +289,6 @@
             isRunning = true;
             startBtn.classList.add('hidden');
             pauseBtn.classList.remove('hidden');
-            // Only create a new session if one isn't already active
             if (!sessionActive) {
                 createSession();
                 sessionActive = true;
