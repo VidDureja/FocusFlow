@@ -202,7 +202,7 @@
     let timer = null;
     let isRunning = false;
     let currentSessionId = null;
-    // Track the selected session type and duration
+    let sessionActive = false; // Track if a session is already started
     let selectedSessionType = 'pomodoro';
     let selectedSessionDuration = 25;
     let timeLeft = selectedSessionDuration * 60;
@@ -283,6 +283,8 @@
         if (isRunning) {
             pauseTimer();
         }
+        sessionActive = false; // New session type, so not active yet
+        currentSessionId = null;
     }
     
     function startTimer() {
@@ -290,8 +292,11 @@
             isRunning = true;
             startBtn.classList.add('hidden');
             pauseBtn.classList.remove('hidden');
-            // Create session on server
-            createSession();
+            // Only create a new session if one isn't already active
+            if (!sessionActive) {
+                createSession();
+                sessionActive = true;
+            }
             timer = setInterval(() => {
                 timeLeft--;
                 updateTimerDisplay();
@@ -319,6 +324,8 @@
         updateTimerDisplay();
         updateProgressBar();
         sessionStatus.textContent = 'Timer reset';
+        sessionActive = false;
+        currentSessionId = null;
     }
     
     function completeTimer() {
