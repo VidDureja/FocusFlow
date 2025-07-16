@@ -388,11 +388,6 @@ document.addEventListener('DOMContentLoaded', () => {
     Notification.requestPermission();
   }
   
-  // Initialize timer if on dashboard
-  if (document.getElementById('timer-display')) {
-    new PomodoroTimer();
-  }
-  
   // Handle premium upgrade
   const upgradeBtn = document.getElementById('upgrade-btn');
   if (upgradeBtn) {
