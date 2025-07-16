@@ -205,6 +205,10 @@
     let isRunning = false;
     let currentSessionId = null;
     
+    // Add these variables to track the selected session type and duration
+    let selectedSessionType = 'pomodoro';
+    let selectedSessionDuration = 25;
+    
     // DOM elements
     const timerDisplay = document.getElementById('timer-display');
     const progressBar = document.getElementById('progress-bar');
@@ -269,6 +273,8 @@
     }
     
     function setSessionType(duration, type) {
+        selectedSessionType = type;
+        selectedSessionDuration = duration;
         timeLeft = duration * 60;
         totalTime = duration * 60;
         updateTimerDisplay();
@@ -278,18 +284,20 @@
     
     function startTimer() {
         if (!isRunning) {
+            // Always set timer to the selected session duration before starting
+            timeLeft = selectedSessionDuration * 60;
+            totalTime = selectedSessionDuration * 60;
+            updateTimerDisplay();
+            updateProgressBar();
             isRunning = true;
             startBtn.classList.add('hidden');
             pauseBtn.classList.remove('hidden');
-            
             // Create session on server
             createSession();
-            
             timer = setInterval(() => {
                 timeLeft--;
                 updateTimerDisplay();
                 updateProgressBar();
-                
                 if (timeLeft <= 0) {
                     completeTimer();
                 }
@@ -351,13 +359,9 @@
     
     async function createSession() {
         try {
-            // Determine session type based on current selection
-            let sessionType = 'pomodoro'; // default
-            const activeCard = document.querySelector('.session-type-card.ring-4');
-            if (activeCard) {
-                sessionType = activeCard.dataset.type;
-            }
-            
+            // Use the selected session type and duration
+            let sessionType = selectedSessionType;
+            let duration = selectedSessionDuration;
             const response = await fetch('/api/session', {
                 method: 'POST',
                 headers: {
@@ -365,7 +369,7 @@
                 },
                 body: JSON.stringify({
                     type: sessionType,
-                    duration: Math.floor(totalTime / 60),
+                    duration: duration,
                     tag: tagSelector ? tagSelector.value : 'General'
                 })
             });
