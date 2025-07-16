@@ -279,7 +279,7 @@
         updateTimerDisplay();
         updateProgressBar();
         sessionStatus.textContent = `Ready to start ${type} session`;
-        // If timer is running, reset and pause
+        // If timer is running, pause and reset
         if (isRunning) {
             pauseTimer();
         }
@@ -287,11 +287,6 @@
     
     function startTimer() {
         if (!isRunning) {
-            // Always use the selected session duration
-            timeLeft = selectedSessionDuration * 60;
-            totalTime = selectedSessionDuration * 60;
-            updateTimerDisplay();
-            updateProgressBar();
             isRunning = true;
             startBtn.classList.add('hidden');
             pauseBtn.classList.remove('hidden');
@@ -319,7 +314,8 @@
     
     function resetTimer() {
         pauseTimer();
-        timeLeft = totalTime;
+        timeLeft = selectedSessionDuration * 60;
+        totalTime = selectedSessionDuration * 60;
         updateTimerDisplay();
         updateProgressBar();
         sessionStatus.textContent = 'Timer reset';
