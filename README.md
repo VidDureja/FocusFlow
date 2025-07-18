@@ -1,3 +1,7 @@
+# Note:
+This is my final point before I go to deploy to the app store
+
+
 # FocusFlow - Productivity Timer PWA
 
 A Progressive Web App (PWA) that helps you boost productivity using both Pomodoro Technique and Deep Work sessions. Choose your focus method and install it on your phone like a native app!
