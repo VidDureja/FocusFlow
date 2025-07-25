@@ -288,7 +288,7 @@
             startBtn.classList.add('hidden');
             pauseBtn.classList.remove('hidden');
             if (!sessionActive) {
-                createSession();
+            createSession();
                 sessionActive = true;
             }
             timer = setInterval(() => {
@@ -328,12 +328,12 @@
         updateTimerDisplay();
         updateProgressBar();
         sessionStatus.textContent = 'Session completed!';
-
+        
         // Show review modal
         if (currentSessionId) {
             showSessionReviewModal(currentSessionId);
         }
-
+        
         // Show notification
         if ('Notification' in window && Notification.permission === 'granted') {
             new Notification('FocusFlow', {
@@ -341,7 +341,7 @@
                 icon: '/static/icon.png'
             });
         }
-
+        
         // Play sound
         playNotificationSound();
     }
