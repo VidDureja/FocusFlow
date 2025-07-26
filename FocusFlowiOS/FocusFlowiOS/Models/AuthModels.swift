@@ -1,5 +1,12 @@
 import Foundation
 
+// MARK: - User Model
+struct User: Codable {
+    let username: String
+    let email: String
+    var isPremium: Bool = false
+}
+
 // MARK: - Authentication Models
 struct LoginRequest: Codable {
     let username: String

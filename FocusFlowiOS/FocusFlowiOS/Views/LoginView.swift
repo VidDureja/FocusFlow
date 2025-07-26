@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct LoginView: View {
-    @StateObject private var authManager = AuthManager()
+    @EnvironmentObject var authManager: AuthManager
     @State private var username = ""
     @State private var password = ""
     @State private var showingAlert = false
@@ -92,6 +92,7 @@ struct LoginView: View {
             }
             .sheet(isPresented: $isRegistering) {
                 RegisterView()
+                    .environmentObject(authManager)
             }
         }
     }
