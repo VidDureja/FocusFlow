@@ -8,122 +8,144 @@ struct DashboardView: View {
     
     var body: some View {
         NavigationView {
-            ScrollView {
-                VStack(spacing: 30) {
-                    // Timer Display
-                    VStack(spacing: 20) {
-                        Text("Focus Timer")
-                            .font(.largeTitle)
-                            .fontWeight(.bold)
-                            .foregroundColor(.primary)
-                        
-                        Text(timerManager.timeString)
-                            .font(.system(size: 72, weight: .bold, design: .monospaced))
-                            .foregroundColor(.purple)
-                        
-                        // Progress Bar
-                        ProgressView(value: timerManager.progress)
-                            .progressViewStyle(LinearProgressViewStyle(tint: .purple))
-                            .scaleEffect(x: 1, y: 2, anchor: .center)
-                            .padding(.horizontal)
-                        
-                        // Timer Controls
-                        HStack(spacing: 20) {
-                            Button(action: {
-                                if timerManager.isRunning {
-                                    timerManager.pauseTimer()
-                                } else {
-                                    Task {
-                                        await timerManager.startTimer()
-                                    }
-                                }
-                            }) {
-                                HStack {
-                                    Image(systemName: timerManager.isRunning ? "pause.fill" : "play.fill")
-                                    Text(timerManager.isRunning ? "Pause" : "Start")
-                                }
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(timerManager.isRunning ? Color.orange : Color.green)
-                                .foregroundColor(.white)
-                                .cornerRadius(10)
-                            }
+            ZStack {
+                // Background
+                Color(red: 0.98, green: 0.98, blue: 0.98).ignoresSafeArea() // Gray-50
+                
+                ScrollView {
+                    VStack(spacing: 32) {
+                        // Timer Display Card
+                        VStack(spacing: 24) {
+                            // Timer Title
+                            Text("Focus Timer")
+                                .font(.system(size: 28, weight: .bold, design: .default))
+                                .foregroundColor(Color(red: 0.13, green: 0.13, blue: 0.13)) // Gray-900
                             
-                            Button(action: {
-                                timerManager.stopTimer()
-                            }) {
-                                HStack {
-                                    Image(systemName: "stop.fill")
-                                    Text("Reset")
-                                }
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(Color.red)
-                                .foregroundColor(.white)
-                                .cornerRadius(10)
-                            }
-                        }
-                        .padding(.horizontal)
-                    }
-                    .padding()
-                    .background(Color(.systemGray6))
-                    .cornerRadius(15)
-                    
-                    // Session Type Selection
-                    VStack(spacing: 20) {
-                        Text("Choose Your Focus Method")
-                            .font(.title2)
-                            .fontWeight(.semibold)
-                            .foregroundColor(.primary)
-                        
-                        LazyVGrid(columns: [
-                            GridItem(.flexible()),
-                            GridItem(.flexible())
-                        ], spacing: 15) {
-                            ForEach([SessionType.pomodoro, SessionType.deepWork], id: \.self) { sessionType in
-                                SessionTypeCard(
-                                    sessionType: sessionType,
-                                    isSelected: timerManager.selectedSessionType == sessionType,
-                                    onTap: {
-                                        timerManager.selectSessionType(sessionType)
-                                    }
-                                )
-                            }
-                        }
-                    }
-                    
-                    // Break Options
-                    VStack(spacing: 15) {
-                        Text("Break Options")
-                            .font(.title2)
-                            .fontWeight(.semibold)
-                            .foregroundColor(.primary)
-                        
-                        HStack(spacing: 20) {
-                            ForEach([SessionType.shortBreak, SessionType.mediumBreak], id: \.self) { breakType in
+                            // Timer Display
+                            Text(timerManager.timeString)
+                                .font(.system(size: 64, weight: .bold, design: .monospaced))
+                                .foregroundColor(Color(red: 0.58, green: 0.2, blue: 0.92)) // Purple-600
+                                .padding(.vertical, 8)
+                            
+                            // Progress Bar
+                            ProgressView(value: timerManager.progress)
+                                .progressViewStyle(LinearProgressViewStyle(tint: Color(red: 0.58, green: 0.2, blue: 0.92)))
+                                .scaleEffect(x: 1, y: 2, anchor: .center)
+                                .padding(.horizontal, 24)
+                            
+                            // Timer Controls
+                            HStack(spacing: 16) {
                                 Button(action: {
-                                    timerManager.selectSessionType(breakType)
+                                    if timerManager.isRunning {
+                                        timerManager.pauseTimer()
+                                    } else {
+                                        Task {
+                                            await timerManager.startTimer()
+                                        }
+                                    }
                                 }) {
-                                    Text(breakType.displayName)
-                                        .fontWeight(.semibold)
-                                        .frame(maxWidth: .infinity)
-                                        .padding()
-                                        .background(breakType == .shortBreak ? Color.green : Color.yellow)
-                                        .foregroundColor(.white)
-                                        .cornerRadius(10)
+                                    HStack(spacing: 8) {
+                                        Image(systemName: timerManager.isRunning ? "pause.fill" : "play.fill")
+                                            .font(.system(size: 16, weight: .medium))
+                                        Text(timerManager.isRunning ? "Pause" : "Start")
+                                            .font(.system(size: 14, weight: .medium, design: .default))
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 48)
+                                    .background(
+                                        timerManager.isRunning ? 
+                                        Color(red: 0.96, green: 0.58, blue: 0.2) : // Orange-500
+                                        Color(red: 0.2, green: 0.78, blue: 0.35) // Green-500
+                                    )
+                                    .foregroundColor(.white)
+                                    .cornerRadius(8)
+                                }
+                                
+                                Button(action: {
+                                    timerManager.stopTimer()
+                                }) {
+                                    HStack(spacing: 8) {
+                                        Image(systemName: "stop.fill")
+                                            .font(.system(size: 16, weight: .medium))
+                                        Text("Reset")
+                                            .font(.system(size: 14, weight: .medium, design: .default))
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 48)
+                                    .background(Color(red: 0.86, green: 0.2, blue: 0.2)) // Red-600
+                                    .foregroundColor(.white)
+                                    .cornerRadius(8)
+                                }
+                            }
+                            .padding(.horizontal, 24)
+                        }
+                        .padding(24)
+                        .background(Color.white)
+                        .cornerRadius(16)
+                        .shadow(color: Color.black.opacity(0.05), radius: 8, x: 0, y: 2)
+                        .padding(.horizontal, 16)
+                        
+                        // Session Type Selection
+                        VStack(spacing: 20) {
+                            Text("Choose Your Focus Method")
+                                .font(.system(size: 20, weight: .semibold, design: .default))
+                                .foregroundColor(Color(red: 0.13, green: 0.13, blue: 0.13)) // Gray-900
+                            
+                            LazyVGrid(columns: [
+                                GridItem(.flexible()),
+                                GridItem(.flexible())
+                            ], spacing: 16) {
+                                ForEach([SessionType.pomodoro, SessionType.deepWork], id: \.self) { sessionType in
+                                    SessionTypeCard(
+                                        sessionType: sessionType,
+                                        isSelected: timerManager.selectedSessionType == sessionType,
+                                        onTap: {
+                                            timerManager.selectSessionType(sessionType)
+                                        }
+                                    )
                                 }
                             }
                         }
-                        .padding(.horizontal)
+                        .padding(.horizontal, 16)
+                        
+                        // Break Options
+                        VStack(spacing: 16) {
+                            Text("Break Options")
+                                .font(.system(size: 20, weight: .semibold, design: .default))
+                                .foregroundColor(Color(red: 0.13, green: 0.13, blue: 0.13)) // Gray-900
+                            
+                            HStack(spacing: 16) {
+                                ForEach([SessionType.shortBreak, SessionType.mediumBreak], id: \.self) { breakType in
+                                    Button(action: {
+                                        timerManager.selectSessionType(breakType)
+                                    }) {
+                                        Text(breakType.displayName)
+                                            .font(.system(size: 14, weight: .medium, design: .default))
+                                            .frame(maxWidth: .infinity)
+                                            .frame(height: 44)
+                                            .background(
+                                                breakType == .shortBreak ? 
+                                                Color(red: 0.2, green: 0.78, blue: 0.35) : // Green-500
+                                                Color(red: 0.96, green: 0.78, blue: 0.2) // Yellow-500
+                                            )
+                                            .foregroundColor(.white)
+                                            .cornerRadius(8)
+                                    }
+                                }
+                            }
+                            .padding(.horizontal, 16)
+                        }
+                        .padding(.horizontal, 16)
+                        
+                        // Session Status
+                        Text(timerManager.isRunning ? "Session in progress..." : "Ready to start \(timerManager.selectedSessionType.displayName) session")
+                            .font(.system(size: 16, weight: .medium, design: .default))
+                            .foregroundColor(Color(red: 0.45, green: 0.45, blue: 0.45)) // Gray-600
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, 16)
+                            .padding(.bottom, 32)
                     }
-                    
-                    // Session Status
-                    Text(timerManager.isRunning ? "Session in progress..." : "Ready to start \(timerManager.selectedSessionType.displayName) session")
-                        .font(.headline)
-                        .foregroundColor(.secondary)
-                        .multilineTextAlignment(.center)
                 }
-                .padding()
             }
             .navigationTitle("Dashboard")
             .navigationBarTitleDisplayMode(.large)
@@ -143,6 +165,7 @@ struct DashboardView: View {
                         }
                     } label: {
                         Image(systemName: "ellipsis.circle")
+                            .foregroundColor(Color(red: 0.58, green: 0.2, blue: 0.92)) // Purple-600
                     }
                 }
             }
@@ -171,40 +194,40 @@ struct SessionTypeCard: View {
     var body: some View {
         Button(action: onTap) {
             VStack(spacing: 12) {
-                Image(systemName: sessionType == .pomodoro ? "clock" : "brain")
-                    .font(.system(size: 30))
+                Image(systemName: sessionType == .pomodoro ? "clock.fill" : "brain.head.profile")
+                    .font(.system(size: 28))
                     .foregroundColor(.white)
                 
                 Text(sessionType.displayName)
-                    .font(.headline)
-                    .fontWeight(.bold)
+                    .font(.system(size: 16, weight: .bold, design: .default))
                     .foregroundColor(.white)
                 
                 Text("\(sessionType.duration) minutes")
-                    .font(.title2)
-                    .fontWeight(.bold)
+                    .font(.system(size: 20, weight: .bold, design: .default))
                     .foregroundColor(.white)
                 
                 Text(sessionType == .pomodoro ? "Perfect for quick tasks" : "Ideal for complex projects")
-                    .font(.caption)
-                    .foregroundColor(.white.opacity(0.8))
+                    .font(.system(size: 12, weight: .regular, design: .default))
+                    .foregroundColor(.white.opacity(0.9))
                     .multilineTextAlignment(.center)
             }
             .frame(maxWidth: .infinity)
-            .padding()
+            .padding(20)
             .background(
                 LinearGradient(
-                    colors: sessionType == .pomodoro ? [.purple, .purple.opacity(0.8)] : [.blue, .blue.opacity(0.8)],
+                    colors: sessionType == .pomodoro ? 
+                    [Color(red: 0.58, green: 0.2, blue: 0.92), Color(red: 0.58, green: 0.2, blue: 0.92).opacity(0.8)] : // Purple gradient
+                    [Color(red: 0.2, green: 0.58, blue: 0.92), Color(red: 0.2, green: 0.58, blue: 0.92).opacity(0.8)], // Blue gradient
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 )
             )
-            .cornerRadius(15)
+            .cornerRadius(12)
             .overlay(
-                RoundedRectangle(cornerRadius: 15)
-                    .stroke(isSelected ? Color.white : Color.clear, lineWidth: 3)
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(isSelected ? Color.white : Color.clear, lineWidth: 2)
             )
-            .scaleEffect(isSelected ? 1.05 : 1.0)
+            .scaleEffect(isSelected ? 1.02 : 1.0)
             .animation(.easeInOut(duration: 0.2), value: isSelected)
         }
         .buttonStyle(PlainButtonStyle())
@@ -213,4 +236,5 @@ struct SessionTypeCard: View {
 
 #Preview {
     DashboardView()
+        .environmentObject(AuthManager())
 } 

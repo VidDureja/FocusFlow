@@ -8,29 +8,19 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var isLoggedIn = false
+    @EnvironmentObject var authManager: AuthManager
     
     var body: some View {
         Group {
-            if isLoggedIn {
-                Text("Dashboard - Logged In!")
-                    .font(.title)
-                    .foregroundColor(.green)
+            if authManager.isLoggedIn {
+                DashboardView()
             } else {
-                VStack(spacing: 20) {
-                    Text("FocusFlow Login")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                    
-                    Button("Login") {
-                        isLoggedIn = true
-                    }
-                    .padding()
-                    .background(Color.purple)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
-                }
+                LoginView()
             }
+        }
+        .onAppear {
+            // Check if user is already logged in
+            // This is handled by AuthManager init
         }
     }
 }
